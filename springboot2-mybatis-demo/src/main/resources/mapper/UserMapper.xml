@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.winterchen.dao.UserDao">
+	<resultMap type="com.winterchen.model.UserDomain"
+		id="beseMap">
+		<id property="userId" column="userId" javaType="int" />
+		<result column="userName" javaType="String" />
+		<result column="password" javaType="String" />
+		<result column="phone" javaType="String" />
+	</resultMap>
+	<sql id="BASE_TABLE">
+		UserDomain
+	</sql>
+
+	<sql id="BASE_COLUMN">
+		userId,userName,password,phone
+	</sql>
+
+	<insert id="insert"
+		parameterType="com.winterchen.model.UserDomain">
+		INSERT INTO
+		<include refid="BASE_TABLE" />
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			userName,password,
+			<if test="phone != null">
+				phone,
+			</if>
+		</trim>
+		<trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+			#{userName, jdbcType=VARCHAR},#{password, jdbcType=VARCHAR},
+			<if test="phone != null">
+				#{phone, jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<select id="selectUsers"
+		resultType="com.winterchen.model.UserDomain">
+		SELECT
+		<include refid="BASE_COLUMN" />
+		FROM
+		<include refid="BASE_TABLE" />
+	</select>
+	<update id="updateUser" >
+		update
+		<include refid="BASE_TABLE" />
+		set
+		username = #{username},
+		password = #{password},
+		phone = #{phone}
+		where userId = #{userId}
+	</update>
+	<delete id="delUser" parameterType="int">
+		delete from <include refid="BASE_TABLE" />
+			where userId = #{userId}
+	</delete>
+	<select id="selectUser" resultType="com.winterchen.model.UserDomain" parameterType="int" >
+	select * from <include refid="BASE_TABLE" /> 
+		where userId = #{userId}
+	
+	</select>
+
+</mapper>
